@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>iLA — Catalog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ─── EDIT YOUR BRAND HERE ─────────────────────────── */
+  :root {
+    --brand-name: "iLA";
+    --brand-ig: "@theila.in";
+    --brand-ig-url: "https://www.instagram.com/theila.in/";
+
+    --cream: #8da89d;
+    --warm-white: #0c0d0d;
+    --ink: #1f8753;
+    --stone: #494a76;
+    --gold: #51253d;
+    --gold-light: #036548;
+    --border: rgba(4, 61, 22, 0.1);
+    --border-hover: rgba(219, 9, 44, 0.838);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  /* ─── HEADER ──────────────────────────────────────── */
+  header {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem 1.5rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 5vw, 44px);
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+
+  .tagline {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--stone);
+    margin-top: 4px;
+    text-transform: uppercase;
+  }
+
+  .ig-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 14px;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    color: var(--stone);
+    text-decoration: none;
+    padding: 6px 16px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transition: all 0.2s;
+  }
+
+  .ig-link:hover { border-color: var(--gold); color: var(--gold); }
+
+  .ig-icon { width: 14px; height: 14px; fill: currentColor; }
+
+  /* ─── FILTERS ─────────────────────────────────────── */
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 1.5rem 1rem 0.5rem;
+    background: var(--cream);
+    position: sticky;
+    top: 118px;
+    z-index: 90;
+  }
+
+  .filter-btn {
+    padding: 7px 20px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--stone);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover { border-color: var(--border-hover); color: var(--ink); }
+
+  .filter-btn.active {
+    background: var(--ink);
+    color: var(--warm-white);
+    border-color: var(--ink);
+  }
+
+  /* ─── GRID ────────────────────────────────────────── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border-top: 1px solid var(--border);
+    margin-top: 1.5rem;
+  }
+
+  .card {
+    position: relative;
+    background: var(--warm-white);
+    cursor: pointer;
+    overflow: hidden;
+    aspect-ratio: 3/4;
+    transition: opacity 0.3s;
+  }
+
+  .card.hidden { display: none; }
+
+  .card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .card:hover img { transform: scale(1.06); }
+
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+      rgba(28,24,20,0.72) 0%,
+      rgba(28,24,20,0.15) 45%,
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.35s;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 1.5rem;
+  }
+
+  .card:hover .card-overlay { opacity: 1; }
+
+  .card-tag-label {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--warm-white);
+    color: var(--ink);
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 2px;
+  }
+
+  .card-new {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: var(--gold);
+    color: var(--warm-white);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+  }
+
+  .card-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1.15;
+    margin-bottom: 4px;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: #fff;
+  }
+
+  .card-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: var(--warm-white);
+    color: var(--ink);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 2px;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .card-cta:hover { background: var(--gold-light); }
+
+  .card-cta svg { width: 12px; height: 12px; fill: none; stroke: var(--ink); stroke-width: 2; }
+
+  /* ─── LIGHTBOX ────────────────────────────────────── */
+  #lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(28,24,20,0.88);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    backdrop-filter: blur(4px);
+  }
+
+  #lightbox.open { display: flex; }
+
+  .lb-inner {
+    background: var(--warm-white);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex;
+    max-width: 900px;
+    width: 100%;
+    max-height: 90vh;
+    animation: lbIn 0.3s ease;
+  }
+
+  @keyframes lbIn {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  .lb-img {
+    flex: 0 0 50%;
+    max-height: 90vh;
+    object-fit: cover;
+  }
+
+  .lb-info {
+    flex: 1;
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow-y: auto;
+  }
+
+  .lb-collection {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 8px;
+  }
+
+  .lb-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+
+  .lb-desc {
+    font-size: 14px;
+    color: var(--stone);
+    line-height: 1.7;
+    margin-bottom: 20px;
+    flex: 1;
+  }
+
+  .lb-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+
+  .lb-cta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--warm-white);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 14px 24px;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: background 0.2s;
+  }
+
+  .lb-cta:hover { background: var(--gold); }
+
+  .lb-close {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 36px;
+    height: 36px;
+    background: var(--warm-white);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: var(--ink);
+    transition: background 0.2s;
+  }
+
+  .lb-close:hover { background: var(--gold-light); }
+
+  /* ─── EMPTY STATE ─────────────────────────────────── */
+  .empty {
+    display: none;
+    text-align: center;
+    padding: 5rem 1rem;
+    color: var(--stone);
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    grid-column: 1 / -1;
+  }
+
+  /* ─── FOOTER ──────────────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 3rem 1rem;
+    font-size: 12px;
+    color: var(--stone);
+    letter-spacing: 0.06em;
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+  }
+
+  footer a { color: var(--gold); text-decoration: none; }
+
+  @media (max-width: 600px) {
+    .lb-inner { flex-direction: column; }
+    .lb-img { flex: 0 0 55vw; max-height: 55vw; width: 100%; }
+    .filter-bar { top: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ✏️  EDIT YOUR CATALOG HERE
+     ─────────────────────────────────────────────────────────
+     Each item needs:
+       name       – product name
+       price      – e.g. "€189" or "$149"
+       collection – used for filter buttons (keep consistent)
+       tag        – small label shown on card
+       isNew      – true / false (shows gold "New" badge)
+       img        – direct image URL (right-click Instagram photo → Copy Image Address)
+       igUrl      – link to the Instagram post
+       desc       – short description shown in lightbox
+     ════════════════════════════════════════════════════════ -->
+<script id="catalog-data" type="application/json">
+[
+  {
+    "name": "Perfect comfy and stylish",
+    "price": "Rs.1500",
+    "collection": "Comfy fit",
+    "tag": "",
+    "isNew": false,
+    "img": [
+    "https://i.ibb.co/Lhx3J7MN/Dress1.jpg"
+    ],
+    "igUrl": "https://www.instagram.com/p/DX8wzi5E_o6/?utm_source=ig_web_copy_link&igsh=NTc4MTIwNjQ2YQ==",
+    "desc": "A perfect comfy and stylish handloom straight dress. Sizes available XS to XL DM to shop!"
+  },
+  {
+    "name": "Off-white straight",
+    "price": "Rs. 1500",
+    "collection": "ikat",
+    "tag": "",
+    "isNew": true,
+    "img": "https://i.ibb.co/1ftJQLT5/Dress2.jpg",
+    "igUrl": "https://www.instagram.com/p/DYPlQJwk7R4/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+    "desc": "The “one-and-done” outfit you need! Off-white straight dress in blue + red beautiful Ikkat prints. Rolled sleeves keep it casual. Straight cut keeps it easy. Dress for weekends, kurti for weekdays. XS–XL sizes available"
+  },
+  {
+    "name": "Pretty in pink",
+    "price": "Rs. 1500",
+    "collection": "Casual",
+    "tag": "",
+    "isNew": false,
+    "img": "https://i.ibb.co/GfKGzwPN/Dress3.jpg",
+    "igUrl": "https://www.instagram.com/reel/DXrrP5MEwG-/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+    "desc": "Our new handloom dress is giving major chic vibes. V-neck, pockets, and detailing on sleeves & yoke - perfect for casual days out!"
+  },
+  {
+    "name": "Boho Vibe",
+    "price": "Rs.1500",
+    "collection": "Casual",
+    "tag": "",
+    "isNew": true,
+    "img": "https://i.ibb.co/8DQ10JWF/Dress4.jpg",
+    "igUrl": "https://www.instagram.com/reel/DX1PMxnRViP/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+    "desc": "Get the boho vibe with our super cool handloom short Kurti featuring long bell sleeves in rich brown - perfect for a casual, laid-back look! Pair it with linen trousers or baggy denims for the ultimate chill"
+  },
+  {
+    "name": "Ikkat",
+    "price": "Rs.1500",
+    "collection": "Ikkat",
+    "tag": "",
+    "isNew": false,
+    "img": "https://i.ibb.co/3mFtrKcW/Dress5A.jpg",
+    "igUrl": "https://www.instagram.com/reel/DYE4TvXTRW8/?utm_source=ig_web_copy_link&igsh=MzRlODBiNWFlZA==",
+    "desc": "A rich maroon Kurta Set that feels festive yet easy. Handwoven ikkat print that carries tradition into today. Cut in a breezy A-line with side slits, a flattering V-neck, and subtle pleats for that elegant finish. Top length 45” + Bottom 37”, both with extra margin for the perfect fit."
+  }
+]
+</script>
+
+<!-- ─── HEADER ──────────────────────────────────────────── -->
+<header>
+  <div class="brand">iLA</div>
+  <div class="tagline">Comfy collections, every season</div>
+  <a class="ig-link" href="https://www.instagram.com/theila.in/" target="_blank" rel="noopener">
+    <svg class="ig-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+    </svg>
+    @theila.in
+  </a>
+</header>
+
+<!-- ─── FILTERS ─────────────────────────────────────────── -->
+<div class="filter-bar" id="filterBar"></div>
+
+<!-- ─── GRID ────────────────────────────────────────────── -->
+<div class="grid" id="grid">
+  <p class="empty" id="emptyMsg">No items in this collection yet.</p>
+</div>
+
+<!-- ─── FOOTER ──────────────────────────────────────────── -->
+<footer>
+  &copy; 2025 iLA &nbsp;·&nbsp;
+  <a href="https://www.instagram.com/theila.in/" target="_blank" rel="noopener">Instagram</a>
+</footer>
+
+<!-- ─── LIGHTBOX ─────────────────────────────────────────── -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Product detail">
+  <div class="lb-inner" id="lbInner">
+    <img id="lbImg" src="" alt="" class="lb-img" />
+    <div class="lb-info">
+      <div>
+        <div class="lb-collection" id="lbCollection"></div>
+        <div class="lb-name" id="lbName"></div>
+        <div class="lb-desc" id="lbDesc"></div>
+      </div>
+      <div>
+        <div class="lb-price" id="lbPrice"></div>
+        <a href="#" id="lbCta" target="_blank" rel="noopener" class="lb-cta">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+          View on Instagram
+        </a>
+      </div>
+    </div>
+  </div>
+  <button class="lb-close" id="lbClose" aria-label="Close">✕</button>
+</div>
+
+<script>
+  const data = JSON.parse(document.getElementById('catalog-data').textContent);
+  const grid = document.getElementById('grid');
+  const filterBar = document.getElementById('filterBar');
+  const lightbox = document.getElementById('lightbox');
+  let activeFilter = 'All';
+
+  // ── Build filter buttons ──────────────────────────────
+  const collections = ['All', ...new Set(data.map(d => d.collection))];
+  collections.forEach(col => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (col === 'All' ? ' active' : '');
+    btn.textContent = col;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = col;
+      applyFilter();
+    });
+    filterBar.appendChild(btn);
+  });
+
+  // ── Render cards ──────────────────────────────────────
+  data.forEach((item, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.collection = item.collection;
+    card.innerHTML = `
+      <img src="${item.img}" alt="${item.name}" loading="lazy" />
+      <span class="card-tag-label">${item.tag}</span>
+      ${item.isNew ? '<span class="card-new">New</span>' : ''}
+      <div class="card-overlay">
+        <div class="card-name">${item.name}</div>
+        <div class="card-desc">${item.desc}</div>
+        <div class="card-footer">
+          <span class="card-price">${item.price}</span>
+          <a class="card-cta" href="${item.igUrl}" target="_blank" rel="noopener" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+            Instagram
+          </a>
+        </div>
+      </div>
+    `;
+    card.addEventListener('click', () => openLightbox(item));
+    grid.appendChild(card);
+  });
+
+  // ── Filter logic ──────────────────────────────────────
+  function applyFilter() {
+    const cards = grid.querySelectorAll('.card');
+    let visible = 0;
+    cards.forEach(card => {
+      const show = activeFilter === 'All' || card.dataset.collection === activeFilter;
+      card.classList.toggle('hidden', !show);
+      if (show) visible++;
+    });
+    document.getElementById('emptyMsg').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  // ── Lightbox ──────────────────────────────────────────
+  function openLightbox(item) {
+    document.getElementById('lbImg').src = item.img;
+    document.getElementById('lbImg').alt = item.name;
+    document.getElementById('lbCollection').textContent = item.collection;
+    document.getElementById('lbName').textContent = item.name;
+    document.getElementById('lbDesc').textContent = item.desc;
+    document.getElementById('lbPrice').textContent = item.price;
+    document.getElementById('lbCta').href = item.igUrl;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('lbClose').addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+</script>
+</body>
+</html>
